@@ -32,6 +32,9 @@ dependencies:
   '@reduxjs/toolkit':
     specifier: ^2.2.1
     version: 2.2.1(react-redux@9.1.0)(react@18.2.0)
+  '@types/react-native-vector-icons':
+    specifier: ^6.4.18
+    version: 6.4.18
   axios:
     specifier: ^1.6.7
     version: 1.6.7
@@ -50,6 +53,9 @@ dependencies:
   react-native-config:
     specifier: ^1.5.1
     version: 1.5.1
+  react-native-date-picker:
+    specifier: ^4.4.0
+    version: 4.4.0(react-native@0.73.5)(react@18.2.0)
   react-native-dotenv:
     specifier: ^3.4.11
     version: 3.4.11(@babel/runtime@7.20.0)
@@ -3393,6 +3399,19 @@ packages:
 
   /@types/prop-types@15.7.11:
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
+
+  /@types/react-native-vector-icons@6.4.18:
+    resolution: {integrity: sha512-YGlNWb+k5laTBHd7+uZowB9DpIK3SXUneZqAiKQaj1jnJCZM0x71GDim5JCTMi4IFkhc9m8H/Gm28T5BjyivUw==}
+    dependencies:
+      '@types/react': 18.2.6
+      '@types/react-native': 0.70.19
+    dev: false
+
+  /@types/react-native@0.70.19:
+    resolution: {integrity: sha512-c6WbyCgWTBgKKMESj/8b4w+zWcZSsCforson7UdXtXMecG3MxCinYi6ihhrHVPyUrVzORsvEzK8zg32z4pK6Sg==}
+    dependencies:
+      '@types/react': 18.2.6
+    dev: false
 
   /@types/react-native@0.73.0(@babel/core@7.20.2)(@babel/preset-env@7.20.2)(react@18.2.0):
     resolution: {integrity: sha512-6ZRPQrYM72qYKGWidEttRe6M5DZBEV5F+MHMHqd4TTYx0tfkcdrUFGdef6CCxY0jXU7wldvd/zA/b0A/kTeJmA==}
@@ -7316,6 +7335,16 @@ packages:
     peerDependenciesMeta:
       react-native-windows:
         optional: true
+    dev: false
+
+  /react-native-date-picker@4.4.0(react-native@0.73.5)(react@18.2.0):
+    resolution: {integrity: sha512-Axx3byihwwhKRLRVjPAr/UaEysapkRcKmjjM8/05UaVm4Q0xDn2RFUcRdy1QAahhRcjLjlVYhepxvU5bdgy7ZQ==}
+    peerDependencies:
+      react: '>= 17.0.1'
+      react-native: '>= 0.64.3'
+    dependencies:
+      react: 18.2.0
+      react-native: 0.73.5(@babel/core@7.20.2)(@babel/preset-env@7.20.2)(react@18.2.0)
     dev: false
 
   /react-native-dotenv@3.4.11(@babel/runtime@7.20.0):

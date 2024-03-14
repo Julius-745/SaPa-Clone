@@ -1,43 +1,45 @@
-import { View, Text, TouchableHighlight, Image, TextInput, StyleSheet } from "react-native";
+import { View, Text, TouchableHighlight, Image, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useRef, useState } from "react";
 import {Picker} from '@react-native-picker/picker';
 import GetLocation from 'react-native-get-location';
 import notifee,  { AndroidImportance } from '@notifee/react-native';
 import Config from "react-native-config";
+import { useSelector } from "react-redux";
+import { RootState } from "../components/store/rootReducer";
+import axios from "axios";
+import { ScrollView } from "native-base";
 
 
-function AddPengguna(): React.JSX.Element  {
+function AddPengaduan(): React.JSX.Element  {
+    const token = useSelector((state: RootState) => state.auth.token)
     const pickerRef = useRef();
+    const [response, setResponse] = useState()
     const [selectedIssue, setSelectedIssue] = useState();
     const [deskripsi, setDeskripsi] = useState("");
     const [location, setLocation] = useState<any>()
+    const [selectedImage, setSelectedImage] = useState(null);   
 
-    async function onDisplayNotification() {
-      // Request permissions (required for iOS)
-      await notifee.requestPermission()
-  
-      // Create a channel (required for Android)
-      const channelId = await notifee.createChannel({
-        id: 'alarm',
-        name: 'Firing alarms & timers',
-        lights: false,
-        vibration: true,
-        importance: AndroidImportance.DEFAULT,
-      });
-  
-      // Display a notification
-      await notifee.displayNotification({
-        title: selectedIssue,
-        body: deskripsi + location,
-        android: {
-          channelId,
-          // pressAction is needed if you want the notification to open the app when pressed
-          pressAction: {
-            id: 'default',
-          },
-        },
-      });
-    }
+    const createPengaduan = async () => {
+        try {
+          const response = await axios.post("http://10.0.2.2:1337/api/pengaduans", {
+            "data": {
+            "tanggal_pengaduan": "2024-03-14",
+            "kategori": selectedIssue,
+            "deskripsi": deskripsi,
+            "lokasi_pengaduan": (location.latitude+location.longitude).toString(),
+            "users_permision_user": "pengguna"
+            },
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+          }
+        })
+          setResponse(response.data)
+        } catch (error) {
+          console.log("error", error)
+        }
+      }
 
 
     //create function to crawl each pengaduan updates
@@ -47,8 +49,12 @@ function AddPengguna(): React.JSX.Element  {
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 6000,
-        }).then(
-            location => setLocation(location)
+        }).then(function (response) { 
+            setLocation(response)
+            Alert.alert(
+                'Success',
+                'Lokasi Berhasil Diambil')
+            }
         ).catch(error => {
             const { code, message } = error;
             console.warn(code, message);
@@ -62,17 +68,12 @@ function AddPengguna(): React.JSX.Element  {
     return (
       <View style={styles.sectionContainer}>
 
-        {/* upload image
-        kategori
-        deskripsi
-        lokasi */}
-
-        <TouchableHighlight style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
-            <View>
-                <Text style={{flex:.8}}>Upload Image</Text>
-                <Image src="https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image"/>
-            </View>
-        </TouchableHighlight>
+        {/* datepicker */}
+        <ScrollView>
+        <View style={{gap: 20}}>
+        <TouchableOpacity style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
+            <Image source={{ uri: "https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image"}} style={{ width: 200, height: 200 }}/>
+        </TouchableOpacity>
 
         <Picker
             style={styles.input}
@@ -81,9 +82,10 @@ function AddPengguna(): React.JSX.Element  {
             onValueChange={(itemValue, itemIndex) =>
                 setSelectedIssue(itemValue)
             }>
-            <Picker.Item label="Kebocoran" value="kebocoran" />
-            <Picker.Item label="Pemasanangan Massive" value="pemasangan" />
-            <Picker.Item label="Perawatan Massive" value="perawatan" />
+            <Picker.Item label="Kebocoran" value="Kebocoran" />
+            <Picker.Item label="Pemasanangan Massive" value="Pemasangan" />
+            <Picker.Item label="Perawatan Massive" value="Perawatan" />
+            <Picker.Item label="Lainnya" value="Lainnya" />
         </Picker>
 
         <TextInput
@@ -108,9 +110,11 @@ function AddPengguna(): React.JSX.Element  {
         </TouchableHighlight>
         <TouchableHighlight style={styles.button}>
           <Text style={styles.buttonText} onPress={
-        () => onDisplayNotification()
+        () => createPengaduan()
         }>Upload Aduan</Text>
         </TouchableHighlight>
+        </View>
+        </ScrollView>
       </View>
     );
 }
@@ -162,4 +166,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default AddPengguna;
+export default AddPengaduan;

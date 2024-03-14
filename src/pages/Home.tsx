@@ -9,7 +9,6 @@ import { RootState } from "../components/store/rootReducer";
 import { useSelector } from "react-redux";
 import { Fab, Icon  } from "native-base";
 import Icons from 'react-native-vector-icons/MaterialIcons';
-import { NavigationContainer } from "@react-navigation/native";
 
 
 function Home({navigation}): React.JSX.Element  {
@@ -18,7 +17,7 @@ function Home({navigation}): React.JSX.Element  {
 
     const getPengaduanData = async () => {
       try {
-        const response = await axios("http://10.0.2.2:1337/api/pengaduans", {
+        const response = await axios.get("http://10.0.2.2:1337/api/pengaduans", {
         headers: {
           'Authorization': 'Bearer ' + token
         } 
@@ -36,11 +35,6 @@ function Home({navigation}): React.JSX.Element  {
 
     return (
       <View style={styles.sectionContainer}>
-
-        {/* upload image
-        kategori
-        deskripsi
-        lokasi */}
         <FlatList 
         data={data}
         renderItem={({item}) => 
@@ -51,11 +45,12 @@ function Home({navigation}): React.JSX.Element  {
         }
         />
         <Fab
-          placement="bottom-right"
           colorScheme="blue"
           size="lg"
-          icon={<Icons name="share" variant="FontAwesome" />}
-          onTouchStart={() => navigation.navigate("AddPengguna")}
+          renderInPortal={false}
+          icon={<Icons name="add" size={25} color={"white"}/>}
+          onTouchStart={() => navigation.navigate("AddPengaduan")}
+          style={styles.fab}
         />
         
       </View>
@@ -66,13 +61,17 @@ const styles = StyleSheet.create({
     sectionContainer: {
       marginTop: 32,
       paddingHorizontal: 24,
-      gap:10
+      gap:10,
+      height: "100%"
     },
     heading: {
       fontSize: 25,
       fontWeight: 'bold',
       textTransform: 'uppercase',
       color: 'black',
+    },
+    fab: {
+      bottom: 50,
     },
     input: {
       borderWidth: 1,

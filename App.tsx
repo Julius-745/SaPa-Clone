@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/pages/Login';
 import Home from './src/pages/Home';
-import AddPengguna from './src/pages/AddPengaduan';
+import AddPengaduan from './src/pages/AddPengaduan';
 import { Provider } from 'react-redux';
 import { createStore } from '@reduxjs/toolkit';
 import rootReducer from './src/components/store/rootReducer';
@@ -22,7 +22,7 @@ function App(): React.JSX.Element {
           <Stack.Navigator>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="AddPengguna" component={AddPengguna} />
+            <Stack.Screen name="AddPengaduan" component={AddPengaduan} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>
