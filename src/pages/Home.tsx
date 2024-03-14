@@ -1,30 +1,37 @@
-import { View, Text, TouchableHighlight, Image, TextInput, StyleSheet } from "react-native";
-import { useRef, useState } from "react";
+import { View, Text, TouchableHighlight, Image, TextInput, StyleSheet, FlatList } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import {Picker} from '@react-native-picker/picker';
-import GetLocation from 'react-native-get-location'
+import GetLocation from 'react-native-get-location';
+import notifee,  { AndroidImportance } from '@notifee/react-native';
+import Config from "react-native-config";
+import axios from "axios";
+import { RootState } from "../components/store/rootReducer";
+import { useSelector } from "react-redux";
+import { Fab, Icon  } from "native-base";
+import Icons from 'react-native-vector-icons/MaterialIcons';
+import { NavigationContainer } from "@react-navigation/native";
 
 
-function Home(): React.JSX.Element  {
-    const pickerRef = useRef();
-    const [selectedIssue, setSelectedIssue] = useState();
-    const [deskripsi, setDeskripsi] = useState("");
-    const [location, setLocation] = useState<any>()
+function Home({navigation}): React.JSX.Element  {
+    const token = useSelector((state: RootState) => state.auth.token)
+    const [data, setData] = useState<any>()
 
-
-    const getCurrentLocation = () => {
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 6000,
-        }).then(
-            location => setLocation(location)
-        ).catch(error => {
-            const { code, message } = error;
-            console.warn(code, message);
+    const getPengaduanData = async () => {
+      try {
+        const response = await axios("http://10.0.2.2:1337/api/pengaduans", {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        } 
         })
+        setData(response.data.data)
+      } catch (error) {
+        console.log("error", error)
+      }
     }
 
-
-    console.log("datas", selectedIssue, deskripsi, location)
+    useEffect(() => {
+      getPengaduanData()
+    }, [])
 
 
     return (
@@ -34,46 +41,23 @@ function Home(): React.JSX.Element  {
         kategori
         deskripsi
         lokasi */}
+        <FlatList 
+        data={data}
+        renderItem={({item}) => 
 
-        <TouchableHighlight style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
-            <View>
-                <Text style={{flex:.8}}>Upload Image</Text>
-                <Image src="https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image"/>
-            </View>
-        </TouchableHighlight>
-
-        <Picker
-            style={styles.input}
-            ref={pickerRef}
-            selectedValue={selectedIssue}
-            onValueChange={(itemValue, itemIndex) =>
-                setSelectedIssue(itemValue)
-            }>
-            <Picker.Item label="Kebocoran" value="kebocoran" />
-            <Picker.Item label="Pemasanangan Massive" value="pemasangan" />
-            <Picker.Item label="Perawatan Massive" value="perawatan" />
-        </Picker>
-
-        <TextInput
-            multiline
-            placeholder=
-            {'Ex: Di Jalan Dekat Rumah saya \nterjadi bocor pipa pdam. \nJadinya air dirumah saya mati'}
-            onChangeText={(item) => setDeskripsi(item)}
-            value={deskripsi}
-            style={styles.input}
-          />
-        <TouchableHighlight style={styles.button}>
-          <Text style={styles.buttonText} onPress={
-        //     () => navigation.navigate("Tabs", {
-        //     screen: "Profile", 
-        //     params: {
-        //       name: name,
-        //       location: password
-        //     }
-        // })
-        () => getCurrentLocation()
-        }>Ambil Lokasi Terkini</Text>
-        </TouchableHighlight>
+        <Text>
+          {item.attributes.deskripsi}
+        </Text>
+        }
+        />
+        <Fab
+          placement="bottom-right"
+          colorScheme="blue"
+          size="lg"
+          icon={<Icons name="share" variant="FontAwesome" />}
+          onTouchStart={() => navigation.navigate("AddPengguna")}
+        />
+        
       </View>
     );
 }

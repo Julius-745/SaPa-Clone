@@ -1,36 +1,41 @@
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TextInput, TouchableHighlight, StyleSheet, Alert } from "react-native";
+import {useDispatch} from "react-redux"
+import axios from "axios";
+import { setToken } from "../components/store/authSlice";
+import { AppDispatch } from "../components/store/store";
 
 
 const Login = ({navigation}) =>{
+  const baseUrl = "http://10.0.2.2:1337/api/"
+  const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [data, setData] = useState<any>()
 
   const handlerLogin = (email: string, password: string) => {
     if(!email || !password) return (Alert.alert(
-        'Alert',
-        'Email & Password Required',
-      ))
-
-    if(email === "test@gmail.com" && password != ""){
-        Alert.alert(
-            'Success',
-            'Login Success',
-          )
-        navigation.navigate("Home")
-    } else if(email === "petugas@gmail.com" && password != ""){
-        Alert.alert(
-            'Success',
-            'Login Success',
-          )
-        navigation.navigate("Home")
-    } else {
-        return (Alert.alert(
-            'Alert',
-            'Account Not Found',
-          ))
-    }
+      'Alert',
+      'Email & Password Required',
+    ))
+    axios.post(baseUrl+'auth/local', {
+      identifier: email,
+      password: password
+    })
+    .then(function (response) {
+      setData(response.data)
+      Alert.alert(
+        'Success',
+        'Login Berhasil')
+      dispatch(setToken(response.data.jwt))
+      navigation.navigate("Home",{
+        data: data,
+      })
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
     
   }
 
