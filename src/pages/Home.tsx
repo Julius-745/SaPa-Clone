@@ -10,40 +10,18 @@ import { useSelector } from "react-redux";
 import { Button, Fab, Icon  } from "native-base";
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { useIsFocused } from '@react-navigation/native';
+import {API_URL} from '@env';
 
 
 function Home({navigation}): React.JSX.Element  {
     const isFocused = useIsFocused();
     const token = useSelector((state: RootState) => state.auth.token)
     const [data, setData] = useState<any>()
-
-    // async function onDisplayNotification() {
-    //   // Request permissions (required for iOS)
-    //   await notifee.requestPermission()
-  
-    //   // Create a channel (required for Android)
-    //   const channelId = await notifee.createChannel({
-    //     id: 'default',
-    //     name: 'Default Channel',
-    //   });
-  
-    //   // Display a notification
-    //   await notifee.displayNotification({
-    //     title: 'Notification Test',
-    //     body: 'Main body content of the notification',
-    //     android: {
-    //       channelId,
-    //       pressAction: {
-    //         id: 'default',
-    //       },
-    //     },
-    //   })
-    // }
     
 
     const getPengaduanData = async () => {
       try {
-        const response = await axios.get("http://10.0.2.2:1337/api/pengaduans", {
+        const response = await axios.get(API_URL+"pengaduans", {
         headers: {
           'Authorization': 'Bearer ' + token
         } 

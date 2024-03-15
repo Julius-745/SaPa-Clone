@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../components/store/rootReducer";
 import axios from "axios";
 import { ScrollView } from "native-base";
-
+import {API_URL} from '@env';
 
 function AddPengaduan(): React.JSX.Element  {
     const token = useSelector((state: RootState) => state.auth.token)
@@ -21,7 +21,7 @@ function AddPengaduan(): React.JSX.Element  {
 
     const createPengaduan = async () => {
         try {
-          const response = await axios.post("http://10.0.2.2:1337/api/pengaduans", {
+          const response = await axios.post(API_URL+"pengaduans", {
             "data": {
             "tanggal_pengaduan": "2024-03-14",
             "kategori": selectedIssue,

@@ -9,6 +9,10 @@ module.exports = {
         safe: false,
         allowUndefined: true,
         verbose: false,
+        "allowlist": [
+          "API_URL",
+          "API_TOKEN"
+        ]
     }]
   ]
 };

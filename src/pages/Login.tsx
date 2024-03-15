@@ -5,10 +5,10 @@ import {useDispatch} from "react-redux"
 import axios from "axios";
 import { setToken } from "../components/store/authSlice";
 import { AppDispatch } from "../components/store/store";
+import {API_URL} from '@env';
 
 
 const Login = ({navigation}) =>{
-  const baseUrl = "http://10.0.2.2:1337/api/"
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -19,7 +19,7 @@ const Login = ({navigation}) =>{
       'Alert',
       'Email & Password Required',
     ))
-    axios.post(baseUrl+'auth/local', {
+    axios.post(API_URL+'auth/local', {
       identifier: email,
       password: password
     })
@@ -29,9 +29,7 @@ const Login = ({navigation}) =>{
         'Success',
         'Login Berhasil')
       dispatch(setToken(response.data.jwt))
-      navigation.navigate("Home",{
-        data: data,
-      })
+      navigation.navigate("Home")
     })
     .catch(function (error) {
       console.log(error);
