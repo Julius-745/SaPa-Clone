@@ -62,9 +62,6 @@ function AddPengaduan(): React.JSX.Element  {
     }
 
 
-    console.log("datas", selectedIssue, deskripsi, location)
-
-
     return (
       <View style={styles.sectionContainer}>
 

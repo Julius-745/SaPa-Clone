@@ -7,13 +7,39 @@ import Config from "react-native-config";
 import axios from "axios";
 import { RootState } from "../components/store/rootReducer";
 import { useSelector } from "react-redux";
-import { Fab, Icon  } from "native-base";
+import { Button, Fab, Icon  } from "native-base";
 import Icons from 'react-native-vector-icons/MaterialIcons';
+import { useIsFocused } from '@react-navigation/native';
 
 
 function Home({navigation}): React.JSX.Element  {
+    const isFocused = useIsFocused();
     const token = useSelector((state: RootState) => state.auth.token)
     const [data, setData] = useState<any>()
+
+    // async function onDisplayNotification() {
+    //   // Request permissions (required for iOS)
+    //   await notifee.requestPermission()
+  
+    //   // Create a channel (required for Android)
+    //   const channelId = await notifee.createChannel({
+    //     id: 'default',
+    //     name: 'Default Channel',
+    //   });
+  
+    //   // Display a notification
+    //   await notifee.displayNotification({
+    //     title: 'Notification Test',
+    //     body: 'Main body content of the notification',
+    //     android: {
+    //       channelId,
+    //       pressAction: {
+    //         id: 'default',
+    //       },
+    //     },
+    //   })
+    // }
+    
 
     const getPengaduanData = async () => {
       try {
@@ -22,7 +48,30 @@ function Home({navigation}): React.JSX.Element  {
           'Authorization': 'Bearer ' + token
         } 
         })
-        setData(response.data.data)
+        if(data === undefined){
+          setData(response.data.data)
+        }
+        else if(data.length < response.data.data.length){
+          const channelId = await notifee.createChannel({
+            id: 'alarm',
+            name: 'Firing alarms & timers',
+            lights: false,
+            vibration: true,
+            importance: AndroidImportance.DEFAULT,
+          });
+      
+          // Display a notification
+          await notifee.displayNotification({
+            title: 'Notification Test',
+            body: 'Main body content of the notification',
+            android: {
+              channelId,
+              pressAction: {
+                id: 'default',
+              },
+            },
+          }).then(() => setData(response.data.data))
+        }
       } catch (error) {
         console.log("error", error)
       }
@@ -30,7 +79,7 @@ function Home({navigation}): React.JSX.Element  {
 
     useEffect(() => {
       getPengaduanData()
-    }, [])
+    }, [isFocused == true])
 
 
     return (
@@ -44,6 +93,7 @@ function Home({navigation}): React.JSX.Element  {
         </Text>
         }
         />
+        {/* <Button onTouchStart={() => onDisplayNotification()}>Test Notif</Button> */}
         <Fab
           colorScheme="blue"
           size="lg"
