@@ -10,7 +10,7 @@ import axios from "axios";
 import { ScrollView } from "native-base";
 import {API_URL} from '@env';
 
-function AddPengaduan(): React.JSX.Element  {
+function AddPengaduan({navigation}): React.JSX.Element  {
     const token = useSelector((state: RootState) => state.auth.token)
     const pickerRef = useRef();
     const [response, setResponse] = useState()
@@ -20,22 +20,26 @@ function AddPengaduan(): React.JSX.Element  {
     const [selectedImage, setSelectedImage] = useState(null);   
 
     const createPengaduan = async () => {
+      if(selectedIssue == undefined || deskripsi == undefined || location == undefined ) return Alert.alert("Warning", "Data Tidak Boleh Kosong")
         try {
-          const response = await axios.post(API_URL+"pengaduans", {
+          const response = await axios.post(API_URL+"/pengaduans", {
             "data": {
             "tanggal_pengaduan": "2024-03-14",
             "kategori": selectedIssue,
             "deskripsi": deskripsi,
+            "status_pengaduan": "Dilaporkan",
             "lokasi_pengaduan": (location.latitude+location.longitude).toString(),
             "users_permision_user": "pengguna"
             },
         }, {
           headers: {
             'Content-Type': 'application/json',
+            "Accept": "application/json",
             Authorization: 'Bearer ' + token
           }
         })
-          setResponse(response.data)
+          await setResponse(response.data)
+          Alert.alert("Success", "Laporan Berhasil Dibuat")
         } catch (error) {
           console.log("error", error)
         }
@@ -63,56 +67,49 @@ function AddPengaduan(): React.JSX.Element  {
 
 
     return (
-      <View style={styles.sectionContainer}>
+      <><Image source={require("../assets/shape.png")} alt="" position={"absolute"} /><View style={styles.sectionContainer}>
 
         {/* datepicker */}
         <ScrollView>
-        <View style={{gap: 20}}>
-        <TouchableOpacity style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
-            <Image source={{ uri: "https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image"}} style={{ width: 200, height: 200 }}/>
-        </TouchableOpacity>
+          <View style={{ gap: 20 }}>
+            <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center' }}>
+              <Image source={{ uri: "https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image" }} style={{ width: 200, height: 200 }} />
+            </TouchableOpacity>
 
-        <Picker
-            style={styles.input}
-            ref={pickerRef}
-            selectedValue={selectedIssue}
-            onValueChange={(itemValue, itemIndex) =>
-                setSelectedIssue(itemValue)
-            }>
-            <Picker.Item label="Kebocoran" value="Kebocoran" />
-            <Picker.Item label="Pemasanangan Massive" value="Pemasangan" />
-            <Picker.Item label="Perawatan Massive" value="Perawatan" />
-            <Picker.Item label="Lainnya" value="Lainnya" />
-        </Picker>
+            <Picker
+              style={styles.input}
+              ref={pickerRef}
+              selectedValue={selectedIssue}
+              onValueChange={(itemValue, itemIndex) => setSelectedIssue(itemValue)}>
+              <Picker.Item label="Kebocoran" value="Kebocoran" />
+              <Picker.Item label="Pemasanangan Massive" value="Pemasangan" />
+              <Picker.Item label="Perawatan Massive" value="Perawatan" />
+              <Picker.Item label="Lainnya" value="Lainnya" />
+            </Picker>
 
-        <TextInput
-            multiline
-            placeholder=
-            {'Ex: Di Jalan Dekat Rumah saya \nterjadi bocor pipa pdam. \nJadinya air dirumah saya mati'}
-            onChangeText={(item) => setDeskripsi(item)}
-            value={deskripsi}
-            style={styles.input}
-          />
-        <TouchableHighlight style={styles.button}>
-          <Text style={styles.buttonText} onPress={
-        //     () => navigation.navigate("Tabs", {
-        //     screen: "Profile", 
-        //     params: {
-        //       name: name,
-        //       location: password
-        //     }
-        // })
-        () => getCurrentLocation()
-        }>Ambil Lokasi Terkini</Text>
-        </TouchableHighlight>
-        <TouchableHighlight style={styles.button}>
-          <Text style={styles.buttonText} onPress={
-        () => createPengaduan()
-        }>Upload Aduan</Text>
-        </TouchableHighlight>
-        </View>
+            <TextInput
+              multiline
+              placeholder={'Ex: Di Jalan Dekat Rumah saya \nterjadi bocor pipa pdam. \nJadinya air dirumah saya mati'}
+              onChangeText={(item) => setDeskripsi(item)}
+              value={deskripsi}
+              style={styles.input} />
+            <TouchableHighlight style={styles.button}>
+              <Text style={styles.buttonText} onPress={
+                //     () => navigation.navigate("Tabs", {
+                //     screen: "Profile", 
+                //     params: {
+                //       name: name,
+                //       location: password
+                //     }
+                // })
+                () => getCurrentLocation()}>Ambil Lokasi Terkini</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button}>
+              <Text style={styles.buttonText} onPress={() => createPengaduan()}>Upload Aduan</Text>
+            </TouchableHighlight>
+          </View>
         </ScrollView>
-      </View>
+      </View></>
     );
 }
 

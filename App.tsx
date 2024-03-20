@@ -20,7 +20,9 @@ function App(): React.JSX.Element {
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Login" component={Login} options={{headerShown: false, headerStyle: {
+              backgroundColor: '#FFFFFF'
+           }}} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="AddPengaduan" component={AddPengaduan} />
           </Stack.Navigator>
