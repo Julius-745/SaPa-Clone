@@ -11,6 +11,7 @@ import { Box, Button, Divider, Fab, HStack, Icon, Link, Stack, VStack   } from "
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { useIsFocused } from '@react-navigation/native';
 import {API_URL} from '@env';
+import messaging from '@react-native-firebase/messaging';
 import { REPORT_STATUS } from "../components/icons/status";
 
 
@@ -41,6 +42,15 @@ function Home({navigation}): React.JSX.Element  {
         },
       });
     }
+
+
+      // const checkToken = async () => {
+      // const fcmToken = await messaging().getToken();
+      // if (fcmToken) {
+      //     console.log("token", fcmToken);
+      // } 
+      // }
+
     
 
     const getPengaduanData = async () => {
@@ -91,11 +101,12 @@ function Home({navigation}): React.JSX.Element  {
 
     useEffect(() => {
       getPengaduanData()
+      // checkToken();
     }, [isFocused == true])
 
     return (
       <><Image source={require("../assets/shape.png")} alt="" position={"absolute"} /><View style={styles.sectionContainer}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: 40}}>
           <View style={{ flex: 0.9 }}>
             <FlatList
               data={data}
@@ -108,9 +119,9 @@ function Home({navigation}): React.JSX.Element  {
                 return (
                   <Stack bg="white" rounded="md" shadow={3} key={index} marginBottom={2}>
                     <HStack justifyContent={"space-between"} margin={2}>
-                      {/* <View>
-                      {item.attributes.foto_pengaduan.data.map((item: any) => <Image source={{uri: API_URL+item.attributes.url}}></Image>)}
-                    </View> */}
+                      {/* {<View>
+                       <Image source={{uri: API_URL+item.attributes.foto_pengaduan.data.attributes.url}}></Image> 
+                    </View> } */}
                       <View>
                         <Text>
                           {item.attributes.kategori}

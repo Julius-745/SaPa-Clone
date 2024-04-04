@@ -70,7 +70,7 @@ function AddPengaduan({navigation}): React.JSX.Element  {
       <><Image source={require("../assets/shape.png")} alt="" position={"absolute"} /><View style={styles.sectionContainer}>
 
         {/* datepicker */}
-        <ScrollView>
+        <ScrollView marginTop={30}>
           <View style={{ gap: 20 }}>
             <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center' }}>
               <Image source={{ uri: "https://dummyimage.com/100x100/fff7ff/000000&text=Dummy+Image" }} style={{ width: 200, height: 200 }} />
